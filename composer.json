@@ -1,0 +1,19 @@
+{
+  "name": "donquixote/stable",
+  "type": "library",
+  "description": "Library for PHP stable sorting.",
+  "homepage": "http://github.com/donquixote/stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Andreas Hennings",
+      "email": "andreas@dqxtech.net"
+    }
+  ],
+  "autoload": {
+    "psr-4": { "Donquixote\\Stable\\": "src/" }
+  },
+  "autoload-dev": {
+    "psr-4": { "Donquixote\\Stable\\Tests\\": "tests/src" }
+  }
+}
