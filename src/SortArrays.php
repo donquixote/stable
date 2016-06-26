@@ -13,7 +13,7 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
-  public static function sortByWeightKey_keysByWeight(array &$items_unsorted, $weight_key, $sort_flags = null) {
+  public static function sortByWeightKey_keysByWeight(array $items_unsorted, $weight_key, $sort_flags = null) {
 
     $keys_by_weight = [];
     foreach ($items_unsorted as $k => $item) {
@@ -44,7 +44,7 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
-  public static function sortByWeightKey_itemsByWeight(array &$items_unsorted, $weight_key, $sort_flags = null) {
+  public static function sortByWeightKey_itemsByWeight(array $items_unsorted, $weight_key, $sort_flags = null) {
 
     $items_by_weight = [];
     foreach ($items_unsorted as $k => $item) {
@@ -73,7 +73,7 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
-  public static function sortByWeightKey_weightWithFraction(array &$items_unsorted, $weight_key, $sort_flags = null) {
+  public static function sortByWeightKey_weightWithFraction(array $items_unsorted, $weight_key, $sort_flags = null) {
 
     $weights_by_key = [];
     $step = 0.01 / count($items_unsorted);
