@@ -102,6 +102,34 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
+  public static function sortByWeightKey_arrayMultisort(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $weights_by_key = [];
+    foreach ($items_unsorted as $k => $item) {
+      $weights_by_key[$k] = isset($item[$weight_key])
+        ? $item[$weight_key]
+        : 0;
+    }
+
+    $keys = array_keys($items_unsorted);
+    $range = range(1, count($items_unsorted));
+    array_multisort($weights_by_key, SORT_ASC, $sort_flags, $range, SORT_ASC, $keys);
+
+    $items_sorted = [];
+    foreach ($keys as $k) {
+      $items_sorted[$k] = $items_unsorted[$k];
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
   public static function sortByWeightKey_backdrop(array $items_unsorted, $weight_key, $sort_flags = null) {
     self::backdrop_sort($items_unsorted, array('weight' => $sort_flags));
     return $items_unsorted;
