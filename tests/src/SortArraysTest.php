@@ -56,6 +56,48 @@ class SortArraysTest extends \PHPUnit_Framework_TestCase {
       SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC));
   }
 
+  public static function testSortByWeightKeys() {
+
+    $items_unsorted = [
+      0 => ['pos 0', 'weight' => -10],
+      1 => ['pos 1', 'b'],
+      2 => ['pos 2', 'weight' => 2],
+      3 => ['pos 3', 'a'],
+      4 => ['pos 4', 'weight' => 0.2],
+      5 => ['pos 5', 'weight' => 0.1],
+      8 => ['pos 8', 'weight' => 0],
+      'x' => ['x', 'weight' => 0],
+      'y' => ['y', 'weight' => 0],
+      'z' => ['z', 'weight' => 2],
+      10 => ['pos 10', 'weight' => -5],
+      11 => ['pos 11', 'weight' => -7],
+    ];
+
+    $items_sorted_expected = [
+      0 => ['pos 0', 'weight' => -10],
+      11 => ['pos 11', 'weight' => -7],
+      10 => ['pos 10', 'weight' => -5],
+      8 => ['pos 8', 'weight' => 0],
+      'x' => ['x', 'weight' => 0],
+      'y' => ['y', 'weight' => 0],
+      3 => ['pos 3', 'a'],
+      1 => ['pos 1', 'b'],
+      5 => ['pos 5', 'weight' => 0.1],
+      4 => ['pos 4', 'weight' => 0.2],
+      2 => ['pos 2', 'weight' => 2],
+      'z' => ['z', 'weight' => 2],
+    ];
+
+    static::assertEqualArrays(
+      $items_sorted_expected,
+      SortArrays::sortByWeightKeys_itemsByWeight(
+        $items_unsorted,
+        [
+          'weight' => SORT_NUMERIC,
+          1 => SORT_STRING,
+        ]));
+  }
+
   /**
    * @param array[] $expected
    * @param array[] $actual

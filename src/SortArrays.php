@@ -87,6 +87,52 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_itemsByWeight(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $sort_flags = reset($sort_flags_by_weight_key);
+    $weight_key = key($sort_flags_by_weight_key);
+    unset($sort_flags_by_weight_key[$weight_key]);
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (isset($item[$weight_key])) {
+        $items_by_weight[(string)$item[$weight_key]][$k] = $item;
+      }
+      else {
+        $items_by_weight[$neutral_value][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    if ([] === $sort_flags_by_weight_key) {
+      foreach ($items_by_weight as $weight => $items_in_group) {
+        $items_sorted += $items_in_group;
+      }
+    }
+    else {
+      foreach ($items_by_weight as $weight => $items_in_group) {
+        if (1 !== count($items_in_group)) {
+          $items_sorted += self::sortByWeightKeys_itemsByWeight($items_in_group, $sort_flags_by_weight_key);
+        }
+        else {
+          $items_sorted += $items_in_group;
+        }
+      }
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
    * @param string|int $weight_key
    * @param int $sort_flags
    *
