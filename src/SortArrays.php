@@ -107,19 +107,19 @@ final class SortArrays extends UtilBase {
     return $items_unsorted;
   }
 
-    /**
-     * Sort an array based on user-provided keys within that array.
-     *
-     * @param array $array
-     *   The input array to be sorted.
-     * @param array $keys
-     *   An array of keys on which to be sort. Each key of the $keys array is the
-     *   key by which sorting will be done. Each value of the $keys array must be
-     *   one of the PHP constants sorting, either SORT_NUMERIC or SORT_STRING.
-     *   If an unindexed array is passed in, each value will be assumed to be the
-     *   key by which sorting will be done, and all comparisons will be done as
-     *   though SORT_NUMERIC were passed in for each key.
-     */
+  /**
+   * Sort an array based on user-provided keys within that array.
+   *
+   * @param array $array
+   *   The input array to be sorted.
+   * @param array $keys
+   *   An array of keys on which to be sort. Each key of the $keys array is the
+   *   key by which sorting will be done. Each value of the $keys array must be
+   *   one of the PHP constants sorting, either SORT_NUMERIC or SORT_STRING.
+   *   If an unindexed array is passed in, each value will be assumed to be the
+   *   key by which sorting will be done, and all comparisons will be done as
+   *   though SORT_NUMERIC were passed in for each key.
+   */
   private static function backdrop_sort(array &$array, array $keys = array('weight')) {
     // Ensure all keys have a sort value.
     $new_keys = array();
