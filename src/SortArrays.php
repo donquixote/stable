@@ -7,6 +7,21 @@ use Donquixote\Stable\Util\UtilBase;
 final class SortArrays extends UtilBase {
 
   /**
+   * @param int|null $sort_flags
+   *
+   * @return int|string
+   */
+  public static function sortFlagsGetNeutralValue($sort_flags = null) {
+    // @todo Support more cases.
+    if ($sort_flags === SORT_STRING) {
+      return '';
+    }
+    else {
+      return 0;
+    }
+  }
+
+  /**
    * @param array[] $items_unsorted
    * @param string|int $weight_key
    * @param int $sort_flags
@@ -15,13 +30,15 @@ final class SortArrays extends UtilBase {
    */
   public static function sortByWeightKey_keysByWeight(array $items_unsorted, $weight_key, $sort_flags = null) {
 
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
     $keys_by_weight = [];
     foreach ($items_unsorted as $k => $item) {
       if (isset($item[$weight_key])) {
         $keys_by_weight[(string)$item[$weight_key]][] = $k;
       }
       else {
-        $keys_by_weight[0][] = $k;
+        $keys_by_weight[$neutral_value][] = $k;
       }
     }
 
@@ -46,13 +63,15 @@ final class SortArrays extends UtilBase {
    */
   public static function sortByWeightKey_itemsByWeight(array $items_unsorted, $weight_key, $sort_flags = null) {
 
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
     $items_by_weight = [];
     foreach ($items_unsorted as $k => $item) {
       if (isset($item[$weight_key])) {
         $items_by_weight[(string)$item[$weight_key]][$k] = $item;
       }
       else {
-        $items_by_weight[0][$k] = $item;
+        $items_by_weight[$neutral_value][$k] = $item;
       }
     }
 
@@ -104,11 +123,13 @@ final class SortArrays extends UtilBase {
    */
   public static function sortByWeightKey_arrayMultisort(array $items_unsorted, $weight_key, $sort_flags = null) {
 
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
     $weights_by_key = [];
     foreach ($items_unsorted as $k => $item) {
       $weights_by_key[$k] = isset($item[$weight_key])
         ? $item[$weight_key]
-        : 0;
+        : $neutral_value;
     }
 
     $keys = array_keys($items_unsorted);

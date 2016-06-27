@@ -6,6 +6,11 @@ use Donquixote\Stable\SortArrays;
 
 class SortArraysTest extends \PHPUnit_Framework_TestCase {
 
+  public function testSortFlagsGetNeutralValue() {
+    static::assertSame(0, SortArrays::sortFlagsGetNeutralValue(SORT_NUMERIC));
+    static::assertSame('', SortArrays::sortFlagsGetNeutralValue(SORT_STRING));
+  }
+
   public function testSortByWeight() {
 
     $items_unsorted = [
