@@ -82,10 +82,22 @@ for ($j = 0; $j < 100; ++$j) {
   $t0 = ($dtss['arrayMultisort'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightCallback_arrayMultisort_callUserFunc($items_unsorted, 'item_get_weight', SORT_NATURAL);
+  }
+
+  $t0 = ($dtss['weightCallback_callUserFunc function'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightCallback_arrayMultisort($items_unsorted, 'item_get_weight', SORT_NATURAL);
   }
 
   $t0 = ($dtss['weightCallback function'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightCallback_arrayMultisort_callUserFunc($items_unsorted, $weight_callback, SORT_NATURAL);
+  }
+
+  $t0 = ($dtss['weightCallback_callUserFunc closure'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightCallback_arrayMultisort($items_unsorted, $weight_callback, SORT_NATURAL);
