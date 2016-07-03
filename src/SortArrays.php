@@ -123,6 +123,37 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
+  public static function sortByWeightKey_itemsByWeight_arrayKeyExists(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (array_key_exists($weight_key, $item)) {
+        $items_by_weight[(string)$item[$weight_key]][$k] = $item;
+      }
+      else {
+        $items_by_weight[$neutral_value][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
   public static function sortByWeightKey_itemsByWeight_knownKey(array $items_unsorted, $weight_key, $sort_flags = null) {
 
     $items_by_weight = [];
