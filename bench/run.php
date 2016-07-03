@@ -1,11 +1,12 @@
 <?php
 
 use Donquixote\Stable\SortArrays;
+use Donquixote\Stable\Util\BenchUtil;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $items_unsorted = [];
-for ($i = 0; $i < 1000; ++$i) {
+for ($i = 0; $i < 100; ++$i) {
   $item = [
     'x' => uniqid('', false),
     'y' => uniqid('', false),
@@ -30,48 +31,46 @@ assert($x0 === $xm);
 # assert($x0 === $x3);
 assert($x0 == $x3);
 
-$dts = [];
+$dtss = [];
 $t0 = microtime(true);
 
-for ($j = 0; $j < 4; ++$j) {
+for ($j = 0; $j < 100; ++$j) {
 
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_itemsByWeight_isArray($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['itemsByWeight_isArray'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['itemsByWeight_isArray'][] = microtime(true) - $t0) + $t0;
 
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['itemsByWeight'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['itemsByWeight'][] = microtime(true) - $t0) + $t0;
 
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['keysByWeight'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['keysByWeight'][] = microtime(true) - $t0) + $t0;
 
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['weightWithFraction'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['weightWithFraction'][] = microtime(true) - $t0) + $t0;
 
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_arrayMultisort($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['arrayMultisort'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['arrayMultisort'][] = microtime(true) - $t0) + $t0;
 
-  /*
-  for ($i = 0; $i < 1000; ++$i) {
+  for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
   }
 
-  $t0 = ($dts['backdrop'][] = microtime(true) - $t0) + $t0;
-  */
+  $t0 = ($dtss['backdrop (NOT STABLE!)'][] = microtime(true) - $t0) + $t0;
 }
 
-print_r($dts);
+BenchUtil::printPercentilesTable($dtss, 10000);
