@@ -371,6 +371,32 @@ final class SortArrays extends UtilBase {
    *
    * @return array[]
    */
+  public static function sortByWeightCallback_arrayMultisort_callUserFunc(array $items_unsorted, $weight_callback, $sort_flags = null) {
+
+    $weights_by_key = [];
+    foreach ($items_unsorted as $k => $item) {
+      $weights_by_key[$k] = call_user_func($weight_callback, $item);
+    }
+
+    $keys = array_keys($items_unsorted);
+    $range = range(1, count($items_unsorted));
+    array_multisort($weights_by_key, SORT_ASC, $sort_flags, $range, SORT_ASC, $keys);
+
+    $items_sorted = [];
+    foreach ($keys as $k) {
+      $items_sorted[$k] = $items_unsorted[$k];
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
   public static function sortByWeightsCallback_arrayMultisort(array $items_unsorted, $weights_callback, $sort_flags = null) {
 
     $weights_by_key = $weights_callback($items_unsorted);
