@@ -87,6 +87,123 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeight_isArray(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (is_array($item) && isset($item[$weight_key])) {
+        $items_by_weight[(string)$item[$weight_key]][$k] = $item;
+      }
+      else {
+        $items_by_weight[$neutral_value][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeight_knownKey(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      $items_by_weight[(string)$item[$weight_key]][$k] = $item;
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeightStrtolower(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (isset($item[$weight_key])) {
+        $items_by_weight[strtolower($item[$weight_key])][$k] = $item;
+      }
+      else {
+        $items_by_weight[$neutral_value][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeightMbStrtolower(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (isset($item[$weight_key])) {
+        $items_by_weight[mb_strtolower($item[$weight_key])][$k] = $item;
+      }
+      else {
+        $items_by_weight[$neutral_value][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, $sort_flags);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
    * @param int[] $sort_flags_by_weight_key
    *   Format: $[$weight_key] = $sort_flags
    *
@@ -184,6 +301,84 @@ final class SortArrays extends UtilBase {
 
     $items_sorted = [];
     foreach ($keys as $k) {
+      $items_sorted[$k] = $items_unsorted[$k];
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightCallback_arrayMultisort(array $items_unsorted, $weight_callback, $sort_flags = null) {
+
+    $weights_by_key = [];
+    foreach ($items_unsorted as $k => $item) {
+      $weights_by_key[$k] = $weight_callback($item);
+    }
+
+    $keys = array_keys($items_unsorted);
+    $range = range(1, count($items_unsorted));
+    array_multisort($weights_by_key, SORT_ASC, $sort_flags, $range, SORT_ASC, $keys);
+
+    $items_sorted = [];
+    foreach ($keys as $k) {
+      $items_sorted[$k] = $items_unsorted[$k];
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightsCallback_arrayMultisort(array $items_unsorted, $weights_callback, $sort_flags = null) {
+
+    $weights_by_key = $weights_callback($items_unsorted);
+
+    $keys = array_keys($items_unsorted);
+    $range = range(1, count($items_unsorted));
+    array_multisort($weights_by_key, SORT_ASC, $sort_flags, $range, SORT_ASC, $keys);
+
+    $items_sorted = [];
+    foreach ($keys as $k) {
+      $items_sorted[$k] = $items_unsorted[$k];
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   * @param int $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_schwartzian(array $items_unsorted, $weight_key, $sort_flags = null) {
+
+    $neutral_value = self::sortFlagsGetNeutralValue($sort_flags);
+
+    $weights_by_key = [];
+    $i = 0;
+    foreach ($items_unsorted as $k => $item) {
+      $weights_by_key[$k] = isset($item[$weight_key])
+        ? [$item[$weight_key], ++$i]
+        : [$neutral_value, ++$i];
+    }
+
+    asort($weights_by_key);
+
+    $items_sorted = [];
+    foreach ($weights_by_key as $k => $_) {
       $items_sorted[$k] = $items_unsorted[$k];
     }
 
