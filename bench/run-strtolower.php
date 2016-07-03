@@ -61,7 +61,7 @@ for ($j = 0; $j < 100; ++$j) {
     $items_sorted = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'x', SORT_NATURAL | SORT_FLAG_CASE);
   }
 
-  $t0 = ($dtss['itemsByWeight'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['itemsByWeight (FLAWED!!)'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_itemsByWeightStrtolower($items_unsorted, 'x', SORT_NATURAL);
