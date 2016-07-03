@@ -103,7 +103,7 @@ for ($j = 0; $j < 100; ++$j) {
     $items_sorted = SortArrays::sortByWeightKey_schwartzian($items_unsorted, 'x', SORT_NATURAL);
   }
 
-  $t0 = ($dtss['schwartzian'][] = microtime(true) - $t0) + $t0;
+  $t0 = ($dtss['schwartzian (FLAWED!!)'][] = microtime(true) - $t0) + $t0;
 }
 
 BenchUtil::printPercentilesTable($dtss, 10000);
