@@ -542,9 +542,11 @@ final class SortArrays extends UtilBase {
           if (!isset($b[$key])) {
             $b[$key] = 0;
           }
+          /** @noinspection TypeUnsafeComparisonInspection */
           if ($a[$key] != $b[$key]) {
             return $a[$key] < $b[$key] ? -1 : 1;
           }
+          return 0;
         });
       }
     }
@@ -562,6 +564,7 @@ final class SortArrays extends UtilBase {
         if (!isset($b[$key])) {
           $b[$key] = 0;
         }
+        /** @noinspection TypeUnsafeComparisonInspection */
         if ($a[$key] == $b[$key]) {
           // Sort on the next key if one exists.
           if (isset($keys_map[$key_index + 1])) {
@@ -576,6 +579,7 @@ final class SortArrays extends UtilBase {
             return ($a[$key] < $b[$key]) ? -1 : 1;
           }
         }
+        return 0;
       };
       uasort($array, $recursive_callback);
     }
