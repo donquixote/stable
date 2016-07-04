@@ -20,6 +20,8 @@ for ($i = 0; $i < 100; ++$i) {
 
 $x = [];
 $x[] = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_itemsByWeight_floatval($items_unsorted, 'weight');
+$x[] = SortArrays::sortByWeightKey_itemsByWeight_castFloat($items_unsorted, 'weight');
 $x[] = SortArrays::sortByWeightKey_itemsByWeight_isArray($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight');
@@ -33,6 +35,8 @@ assert($x[0] === $x[3]);
 assert($x[0] === $x[4]);
 assert($x[0] === $x[5]);
 assert($x[0] === $x[6]);
+assert($x[0] === $x[7]);
+assert($x[0] === $x[8]);
 // This is not the same, because the backdrop sort is not stable.
 assert($x[0] == $x['backdrop']);
 
@@ -52,6 +56,18 @@ for ($j = 0; $j < 100; ++$j) {
   }
 
   $t0 = ($dtss['itemsByWeight'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightKey_itemsByWeight_floatval($items_unsorted, 'weight');
+  }
+
+  $t0 = ($dtss['itemsByWeight_floatval'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightKey_itemsByWeight_castFloat($items_unsorted, 'weight');
+  }
+
+  $t0 = ($dtss['itemsByWeight_castFloat'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);

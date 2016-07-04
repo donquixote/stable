@@ -88,6 +88,63 @@ final class SortArrays extends UtilBase {
   /**
    * @param array[] $items_unsorted
    * @param string|int $weight_key
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeight_floatval(array $items_unsorted, $weight_key) {
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (isset($item[$weight_key])) {
+        /** @noinspection TypesCastingWithFunctionsInspection */
+        $items_by_weight[(string)floatval($item[$weight_key])][$k] = $item;
+      }
+      else {
+        $items_by_weight[0][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, SORT_NUMERIC);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKey_itemsByWeight_castFloat(array $items_unsorted, $weight_key) {
+
+    $items_by_weight = [];
+    foreach ($items_unsorted as $k => $item) {
+      if (isset($item[$weight_key])) {
+        $items_by_weight[(string)(float)$item[$weight_key]][$k] = $item;
+      }
+      else {
+        $items_by_weight[0][$k] = $item;
+      }
+    }
+
+    ksort($items_by_weight, SORT_NUMERIC);
+
+    $items_sorted = [];
+    foreach ($items_by_weight as $weight => $items_in_group) {
+      $items_sorted += $items_in_group;
+    }
+
+    return $items_sorted;
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param string|int $weight_key
    * @param int $sort_flags
    *
    * @return array[]
