@@ -365,7 +365,7 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
-   * @param string|int $weight_key
+   * @param string|int $weight_callback
    * @param int $sort_flags
    *
    * @return array[]
@@ -391,7 +391,7 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
-   * @param string|int $weight_key
+   * @param string|int $weight_callback
    * @param int $sort_flags
    *
    * @return array[]
@@ -417,7 +417,7 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
-   * @param string|int $weight_key
+   * @param string|int $weights_callback
    * @param int $sort_flags
    *
    * @return array[]
