@@ -22,7 +22,7 @@ $x = [];
 $x[] = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_itemsByWeight_isArray($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);
-$x[] = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight');
 $x[] = SortArrays::sortByWeightKey_arrayMultisort($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_arrayMultisort_arrayCombine($items_unsorted, 'weight', SORT_NUMERIC);
 $x['backdrop'] = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
@@ -58,7 +58,7 @@ for ($j = 0; $j < 100; ++$j) {
   $t0 = ($dtss['keysByWeight'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
-    $items_sorted = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC);
+    $items_sorted = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight');
   }
 
   $t0 = ($dtss['weightWithFraction'][] = microtime(true) - $t0) + $t0;
