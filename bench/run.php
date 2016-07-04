@@ -18,18 +18,21 @@ for ($i = 0; $i < 100; ++$i) {
   $items_unsorted[uniqid('', false)] = $item;
 }
 
-$x0 = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'weight', SORT_NUMERIC);
-$x0 = SortArrays::sortByWeightKey_itemsByWeight_isArray($items_unsorted, 'weight', SORT_NUMERIC);
-$x1 = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);
-$x2 = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC);
-$xm = SortArrays::sortByWeightKey_arrayMultisort($items_unsorted, 'weight', SORT_NUMERIC);
-$x3 = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
-assert($x0 === $x1);
-assert($x0 === $x2);
-assert($x0 === $xm);
+$x = [];
+$x[] = SortArrays::sortByWeightKey_itemsByWeight($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_itemsByWeight_isArray($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_arrayMultisort($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_arrayMultisort_arrayCombine($items_unsorted, 'weight', SORT_NUMERIC);
+$x['backdrop'] = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
+assert($x[0] === $x[1]);
+assert($x[0] === $x[2]);
+assert($x[0] === $x[3]);
+assert($x[0] === $x[4]);
+assert($x[0] === $x[5]);
 // This is not the same, because the backdrop sort is not stable.
-# assert($x0 === $x3);
-assert($x0 == $x3);
+assert($x[0] == $x['backdrop']);
 
 $dtss = [];
 $t0 = microtime(true);
@@ -65,6 +68,12 @@ for ($j = 0; $j < 100; ++$j) {
   }
 
   $t0 = ($dtss['arrayMultisort'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightKey_arrayMultisort_arrayCombine($items_unsorted, 'weight', SORT_NUMERIC);
+  }
+
+  $t0 = ($dtss['arrayMultisort_arrayCombine'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
