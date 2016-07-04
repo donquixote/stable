@@ -25,12 +25,14 @@ $x[] = SortArrays::sortByWeightKey_keysByWeight($items_unsorted, 'weight', SORT_
 $x[] = SortArrays::sortByWeightKey_weightWithFraction($items_unsorted, 'weight');
 $x[] = SortArrays::sortByWeightKey_arrayMultisort($items_unsorted, 'weight', SORT_NUMERIC);
 $x[] = SortArrays::sortByWeightKey_arrayMultisort_arrayCombine($items_unsorted, 'weight', SORT_NUMERIC);
+$x[] = SortArrays::sortByWeightKey_arrayMultisort_arrayReplace($items_unsorted, 'weight', SORT_NUMERIC);
 $x['backdrop'] = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
 assert($x[0] === $x[1]);
 assert($x[0] === $x[2]);
 assert($x[0] === $x[3]);
 assert($x[0] === $x[4]);
 assert($x[0] === $x[5]);
+assert($x[0] === $x[6]);
 // This is not the same, because the backdrop sort is not stable.
 assert($x[0] == $x['backdrop']);
 
@@ -74,6 +76,12 @@ for ($j = 0; $j < 100; ++$j) {
   }
 
   $t0 = ($dtss['arrayMultisort_arrayCombine'][] = microtime(true) - $t0) + $t0;
+
+  for ($i = 0; $i < 100; ++$i) {
+    $items_sorted = SortArrays::sortByWeightKey_arrayMultisort_arrayReplace($items_unsorted, 'weight', SORT_NUMERIC);
+  }
+
+  $t0 = ($dtss['arrayMultisort_arrayReplace'][] = microtime(true) - $t0) + $t0;
 
   for ($i = 0; $i < 100; ++$i) {
     $items_sorted = SortArrays::sortByWeightKey_backdrop($items_unsorted, 'weight', SORT_NUMERIC);
