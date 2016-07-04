@@ -338,6 +338,45 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $neutral_weights = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weights[$weight_key] = self::sortFlagsGetNeutralValue($sort_flags);
+    }
+
+    $weightss = [];
+    foreach ($items_unsorted as $k => $item) {
+      foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+        $weightss[$weight_key][] = isset($item[$weight_key])
+          ? $item[$weight_key]
+          : $neutral_weights[$weight_key];
+      }
+    }
+
+    $args = [];
+    foreach ($weightss as $weight_key => $weights) {
+      $args[] = $weights;
+      $args[] = $sort_flags_by_weight_key[$weight_key];
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
    * @param string|int $weight_key
    *
    * @return array[]

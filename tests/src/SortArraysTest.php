@@ -92,10 +92,14 @@ class SortArraysTest extends \PHPUnit_Framework_TestCase {
       $items_sorted_expected,
       SortArrays::sortByWeightKeys_itemsByWeight(
         $items_unsorted,
-        [
+        $weight_keys = [
           'weight' => SORT_NUMERIC,
           1 => SORT_STRING,
         ]));
+
+    static::assertEqualArrays(
+      $items_sorted_expected,
+      SortArrays::sortByWeightKeys_multisort($items_unsorted, $weight_keys));
   }
 
   /**
