@@ -475,7 +475,7 @@ final class SortArrays extends UtilBase {
    * @return array[]
    */
   public static function sortByWeightKey_backdrop(array $items_unsorted, $weight_key, $sort_flags = null) {
-    self::backdrop_sort($items_unsorted, array('weight' => $sort_flags));
+    self::backdrop_sort($items_unsorted, array($weight_key => $sort_flags));
     return $items_unsorted;
   }
 
