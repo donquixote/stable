@@ -377,6 +377,591 @@ final class SortArrays extends UtilBase {
 
   /**
    * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_columns(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($items_unsorted as $item) {
+        $weights[] = isset($item[$weight_key])
+          ? $item[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_columns1(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $keys = array_keys($items_unsorted);
+    $n = count($items_unsorted);
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = array_fill(0, $n, $neutral_weight);
+      $i = 0;
+      foreach ($items_unsorted as $item) {
+        if (isset($item[$weight_key])) {
+          $weights[$i] = $item[$weight_key];
+        }
+        ++$i;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, $n - 1);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_columns1a(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $keys = array_keys($items_unsorted);
+    $n = count($items_unsorted);
+
+    $empty_columns = [
+      0 => array_fill(0, $n, 0),
+      '' => array_fill(0, $n, ''),
+    ];
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = $empty_columns[$neutral_weight];
+      $i = 0;
+      foreach ($items_unsorted as $item) {
+        if (isset($item[$weight_key])) {
+          $weights[$i] = $item[$weight_key];
+        }
+        ++$i;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, $n - 1);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_columns2(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $keys = array_keys($items_unsorted);
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = array_fill_keys($keys, $neutral_weight);
+      foreach ($items_unsorted as $k => $item) {
+        if (isset($item[$weight_key])) {
+          $weights[$k] = $item[$weight_key];
+        }
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $neutral_weights = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weights[$weight_key] = self::sortFlagsGetNeutralValue($sort_flags);
+    }
+
+    $weightss = [];
+    foreach ($items_unsorted as $item) {
+      foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+        $weightss[$weight_key][] = is_array($item) && isset($item[$weight_key])
+          ? $item[$weight_key]
+          : $neutral_weights[$weight_key];
+      }
+    }
+
+    $args = [];
+    foreach ($weightss as $weight_key => $weights) {
+      $args[] = $weights;
+      $args[] = $sort_flags_by_weight_key[$weight_key];
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($items_unsorted as $item) {
+        $weights[] = is_array($item) && isset($item[$weight_key])
+          ? $item[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $rows = [];
+    foreach ($items_unsorted as $k => $item) {
+      $rows[] = is_array($item) ? $item : [];
+    }
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($rows as $row) {
+        $weights[] = isset($row[$weight_key])
+          ? $row[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared2(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $rows = $items_unsorted;
+    foreach (array_diff_key($items_unsorted, array_filter($items_unsorted, 'is_array')) as $k => $item) {
+      $rows[$k] = [];
+    }
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($rows as $row) {
+        $weights[] = isset($row[$weight_key])
+          ? $row[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared3(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $rows = array_replace(
+      array_fill(0, count($items_unsorted), []),
+      array_filter(array_values($items_unsorted), 'is_array'));
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($rows as $row) {
+        $weights[] = isset($row[$weight_key])
+          ? $row[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared4(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $rows = $items_unsorted;
+    foreach (array_keys(array_map('is_array', $items_unsorted), false, true) as $k) {
+      $rows[$k] = [];
+    }
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($rows as $row) {
+        $weights[] = isset($row[$weight_key])
+          ? $row[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared5(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $rows = $items_unsorted;
+    foreach ($rows as &$rowx) {
+      if (!is_array($rowx)) {
+        $rowx = [];
+      }
+    }
+    unset($rowx);
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($rows as $row) {
+        $weights[] = isset($row[$weight_key])
+          ? $row[$weight_key]
+          : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared6(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $keys = array_keys($items_unsorted);
+    $items = array_values($items_unsorted);
+    $n = count($items_unsorted);
+    $array_items = array_filter($items, 'is_array');
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = array_fill(0, $n, $neutral_weight);
+      foreach ($array_items as $i => $item) {
+        if (isset($item[$weight_key])) {
+          $weights[$i] = $item[$weight_key];
+        }
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, $n - 1);
+    $args[] =& $keys;
+    $args[] =& $items;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightKeys_multisort_isArray_columns_prepared7(array $items_unsorted, array $sort_flags_by_weight_key) {
+
+    $keys = array_keys($items_unsorted);
+    $array_items = array_filter($items_unsorted, 'is_array');
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = array_fill_keys($keys, $neutral_weight);
+      foreach ($array_items as $i => $item) {
+        if (isset($item[$weight_key])) {
+          $weights[$i] = $item[$weight_key];
+        }
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param callable $weights_callback
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightsCallback_rows(array $items_unsorted, $weights_callback, array $sort_flags_by_weight_key) {
+    $weight_rows = array_map($weights_callback, $items_unsorted);
+
+    $neutral_weights = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weights[$weight_key] = self::sortFlagsGetNeutralValue($sort_flags);
+    }
+
+    $weight_columns = [];
+    foreach ($weight_rows as $weight_row) {
+      $item_weights = $weight_row + $neutral_weights;
+      foreach ($item_weights as $weight_key => $weight) {
+        $weight_columns[$weight_key][] = $weight;
+      }
+    }
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $args[] = $weight_columns[$weight_key];
+      if (SORT_REGULAR !== $sort_flags) {
+        $args[] = $sort_flags;
+      }
+      if (isset($sort_directions[$weight_key]) && SORT_DESC === $sort_directions[$weight_key]) {
+        $args[] = SORT_DESC;
+      }
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    # var_export(array_map(function($x) {return is_array($x) ? count($x) : "#$x";}, $args));
+    # exit();
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param callable $weights_callback
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightsCallback_callUserFunc(array $items_unsorted, $weights_callback, array $sort_flags_by_weight_key) {
+    $weight_rows = [];
+    foreach ($items_unsorted as $k => $item) {
+      $weight_rows[$k] = call_user_func($weights_callback, $item);
+    }
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($weight_rows as $weight_row) {
+        $weights[] = isset($weight_row[$weight_key]) ? $weight_row[$weight_key] : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
+   * @param callable $weights_callback
+   * @param int[] $sort_flags_by_weight_key
+   *   Format: $[$weight_key] = $sort_flags
+   *
+   * @return array[]
+   */
+  public static function sortByWeightsCallback_arrayMap(array $items_unsorted, $weights_callback, array $sort_flags_by_weight_key) {
+    $weight_rows = array_map($weights_callback, $items_unsorted);
+
+    $args = [];
+    foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
+      $neutral_weight = self::sortFlagsGetNeutralValue($sort_flags);
+      $weights = [];
+      foreach ($weight_rows as $k => $weight_row) {
+        $weights[] = isset($weight_row[$weight_key]) ? $weight_row[$weight_key] : $neutral_weight;
+      }
+      $args[] = $weights;
+      $args[] = $sort_flags;
+    }
+
+    $args[] = range(0, count($items_unsorted) - 1);
+    $keys = array_keys($items_unsorted);
+    $args[] =& $keys;
+    $args[] =& $items_unsorted;
+
+    call_user_func_array('array_multisort', $args);
+
+    return array_combine($keys, $items_unsorted);
+  }
+
+  /**
+   * @param array[] $items_unsorted
    * @param string|int $weight_key
    *
    * @return array[]
