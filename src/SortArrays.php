@@ -351,7 +351,7 @@ final class SortArrays extends UtilBase {
     }
 
     $weightss = [];
-    foreach ($items_unsorted as $k => $item) {
+    foreach ($items_unsorted as $item) {
       foreach ($sort_flags_by_weight_key as $weight_key => $sort_flags) {
         $weightss[$weight_key][] = isset($item[$weight_key])
           ? $item[$weight_key]
